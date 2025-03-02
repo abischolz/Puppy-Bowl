@@ -13,6 +13,9 @@ const fetchAllPlayers = async () => {
     const res = await fetch(`${API_URL}/players`)
     const json = await res.json();
     console.log(json)
+    // you're successfully getting the data, but you need to return it in order to map over it in renderAllPlayers
+    // remember to parse the response - you need to access the player array - here it is json.data.players
+    return json.data.players;
   } catch (err) {
     console.error("Uh oh, trouble fetching players!", err);
   }
@@ -42,9 +45,12 @@ const fetchSinglePlayer = async (playerId) => {
 const addNewPlayer = async (playerObj) => {
   try {
     // TODO
+    // remove the trailing slash from the URL
     const res = await fetch(`${API_URL}/players/`, {
       method: "POST",
+      // here you need to use JSON.stringify to convert the playerObj to a string - JSON needs to be capitalized
       body: json.stringify(playerObj),
+      // you have a typo here - it should be application/json
       headers: {"Content-type": "applcaiton.json"}
     })
     const json = await res.json();
@@ -115,7 +121,8 @@ const renderAllPlayers = (playerList) => {
 
       return playerCard;
     });
-
+    // before you can add to this element, you need to select it from the DOM - use querySelector to get the main element
+    const playersContainer = document.querySelector("main");
     playersContainer.replaceChildren(...playerCards);
   } catch (err) {
     console.log(err);
@@ -135,9 +142,13 @@ const renderAllPlayers = (playerList) => {
  * will call `renderAllPlayers` to re-render the full list of players.
  * @param {Object} player an object representing a single player
  */
+// to get this to work - you need to add an element to your HTML (with class .modal)
 const renderSinglePlayer = (player) => {
-  // TODO
   try {
+    // select the element that we added 
+    const modal = document.querySelector(".modal");
+    // make sure to create an element to hold all of your new player data 
+    const modalContent = document.createElement("div");
     const playerName = document.createElement("h3");
     const playerBreed = document.createElement("p");
     const playerStatus = document.createElement("p");
@@ -163,6 +174,7 @@ const renderSinglePlayer = (player) => {
       playerStatus,
       deleteButton
     );
+    modal.appendChild(modalContent);
     modal.classList.add("modal-open");
     modalContent.classList.add("modal-content-open");
   } catch (err) {
@@ -207,7 +219,9 @@ const renderNewPlayerForm = () => {
       status.appendChild(fieldOption);
       const submitBtn = document.createElement("button");
       submitBtn.innerText = "Submit";
-  
+      // i think you are trying to get the new player form element from the DOM here - use querySelector to select it
+      // once selected, you can add the new elements to it
+      const addNewPlayerForm = document.querySelector("#new-player-form");
       addNewPlayerForm.replaceChildren(
         nameLabel,
         nameInput,
@@ -225,6 +239,8 @@ const renderNewPlayerForm = () => {
           name: playername.value,
           breed: breed.value,
           imageUrl: imgInput.value,
+          //  playerStatus is not defined here
+          // use the variable you assigned to this input - status 
           status: playerStatus.value,
         };
   
