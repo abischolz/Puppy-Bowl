@@ -174,6 +174,7 @@ const renderSinglePlayer = (player) => {
       playerStatus,
       deleteButton
     );
+    // make sure to add your content to your modal! 
     modal.appendChild(modalContent);
     modal.classList.add("modal-open");
     modalContent.classList.add("modal-content-open");
